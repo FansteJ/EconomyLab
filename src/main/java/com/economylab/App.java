@@ -2,6 +2,6 @@ package com.economylab;
 
 public class App {
     public static void main(String[] args) {
-        Main.main(args);
+        Launcher.getLauncher().launch(args);
     }
 }

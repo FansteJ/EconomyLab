@@ -20,7 +20,7 @@ public class LoginController {
     @FXML private Label lblMessage;
 
     @FXML
-    protected void handleLogin() {
+    protected void handleLogin(ActionEvent event) {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
@@ -33,6 +33,20 @@ public class LoginController {
         if (Authentication.loginUser(username, password)) {
             lblMessage.setText("Login successful!");
             lblMessage.setStyle("-fx-text-fill: green;");
+
+            try {
+                Parent dashboardRoot = FXMLLoader.load(getClass().getResource("/com/economylab/view/dashboard-view.fxml"));
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.getScene().setRoot(dashboardRoot);
+
+                stage.sizeToScene();
+                stage.centerOnScreen();
+            } catch (IOException e) {
+                e.printStackTrace();
+                lblMessage.setText("Error loading dashboard!");
+                lblMessage.setStyle("-fx-text-fill: red;");
+            }
+
         } else {
             lblMessage.setText("Invalid credentials.");
             lblMessage.setStyle("-fx-text-fill: red;");

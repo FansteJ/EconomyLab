@@ -468,12 +468,10 @@ INSERT INTO Eksperiment_has_Tip_Alat (ID_Eksperiment, ID_Tip_Alat) VALUES
 (81, 1), (82, 2), (83, 3), (84, 4), (85, 5), (86, 1), (87, 2), (88, 3), (89, 4), (90, 5),
 (91, 1), (92, 2), (93, 3), (94, 4), (95, 5), (96, 1), (97, 2), (98, 3), (99, 4), (100, 5);
 
--- =========================================================================
 -- 1. POGLED (VIEW)
--- Objašnjenje: Ovaj pogled prikazuje statistiku za svaki tip eksperimenta 
--- (ukupan broj izvođenja, ukupna cena i prosečna količina uložena), 
--- ali prikazuje samo one tipove koji imaju više od 5 izvođenja ukupno.
--- =========================================================================
+-- Objasnjenje: Ovaj pogled prikazuje statistiku za svaki tip eksperimenta 
+-- (ukupan broj izvodjenja, ukupna cena i prosecna kolicina ulozena), 
+-- ali prikazuje samo one tipove koji imaju više od 5 izvodjenja ukupno.
 CREATE VIEW v_statistika_tipova AS
 SELECT 
     te.Naziv AS Tip_Eksperimenta,
@@ -490,11 +488,10 @@ HAVING COUNT(i.ID_Izvodjenje) > 5;
 -- Promena delimitera za kreiranje funkcija i procedura
 DELIMITER $$
 
--- =========================================================================
 -- 2. FUNKCIJA
--- Objašnjenje: Funkcija prima cenu izvođenja eksperimenta (INT) i na osnovu
--- nje vraća tekstualnu kategoriju troškova: 'Visoka', 'Srednja' ili 'Niska'.
--- =========================================================================
+-- Objasnjenje: Funkcija prima cenu izvodjenja eksperimenta (INT) i na osnovu
+-- nje vraca tekstualnu kategoriju troskova: 'Visoka', 'Srednja' ili 'Niska'.
+
 CREATE FUNCTION f_kategorija_cene(cena INT) 
 RETURNS VARCHAR(20)
 DETERMINISTIC
@@ -508,18 +505,17 @@ BEGIN
 END $$
 
 
--- =========================================================================
 -- 3. FUNKCIJA ZA TESTIRANJE
--- Objašnjenje: Testira funkciju f_kategorija_cene sa 5 različitih iznosa. 
--- Ako svi vrate tačno ono što se očekuje, vraća TRUE (1), u suprotnom FALSE (0).
--- =========================================================================
+-- Objasnjenje: Testira funkciju f_kategorija_cene sa 5 razlicitih iznosa. 
+-- Ako svi vrate tacno ono sto se ocekuje, vraca TRUE (1), u suprotnom FALSE (0).
+
 CREATE FUNCTION f_test_kategorija_cene() 
 RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
     DECLARE rezultat BOOLEAN DEFAULT TRUE;
     
-    -- Slučaj 1 (Visoka, tačno 50000)
+    -- Slučaj 1 (Visoka, tacno 50000)
     IF f_kategorija_cene(50000) != 'Visoka' THEN SET rezultat = FALSE; END IF;
     -- Slučaj 2 (Visoka, preko 50000)
     IF f_kategorija_cene(75000) != 'Visoka' THEN SET rezultat = FALSE; END IF;
@@ -527,20 +523,18 @@ BEGIN
     IF f_kategorija_cene(30000) != 'Srednja' THEN SET rezultat = FALSE; END IF;
     -- Slučaj 4 (Niska, ispod 20000)
     IF f_kategorija_cene(15000) != 'Niska' THEN SET rezultat = FALSE; END IF;
-    -- Slučaj 5 (Niska, nula ili negativno u slučaju greške)
+    -- Slučaj 5 (Niska, nula ili negativno u slucaju greske)
     IF f_kategorija_cene(0) != 'Niska' THEN SET rezultat = FALSE; END IF;
     
     RETURN rezultat;
 END $$
 
 
--- =========================================================================
 -- 4. PROCEDURA SA TRANSAKCIJOM
--- Objašnjenje: Simulira evidentiranje utroška resursa tokom sesije.
--- Prvo čita (SELECT) da li ima dovoljno resursa. Ako ima, smanjuje stanje u 
--- Laboratoriji (UPDATE) i beleži utrošak u veznu tabelu Sesija_Resurs (INSERT).
--- Ako nema dovoljno resursa, transakcija se poništava (ROLLBACK).
--- =========================================================================
+-- Objasnjenje: Simulira potrosnju resursa tokom sesije.
+-- Prvo cita da li ima dovoljno resursa. Ako ima, smanjuje stanje u 
+-- Laboratoriji i belezi potrosnju u veznu tabelu Sesija_Resurs.
+-- Ako nema dovoljno resursa, transakcija se ponistava.
 CREATE PROCEDURE p_evidentiraj_utrosak(
     IN p_id_lab INT, 
     IN p_id_resurs INT, 
@@ -548,10 +542,10 @@ CREATE PROCEDURE p_evidentiraj_utrosak(
     IN p_kolicina_za_trosenje INT
 )
 BEGIN
-    -- Deklaracija promenljive za čuvanje trenutnog stanja
+    -- Deklaracija promenljive za cuvanje trenutnog stanja
     DECLARE v_dostupno INT DEFAULT 0;
     
-    -- Deklaracija hendlera u slučaju greške (zaustavlja i vraća unazad)
+    -- Deklaracija hendlera u slucaju greske (zaustavlja i vraca unazad)
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
