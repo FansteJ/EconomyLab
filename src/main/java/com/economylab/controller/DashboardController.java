@@ -42,22 +42,39 @@ public class DashboardController {
                 "JOIN Izvodjenje_Izvodjac ii ON iz.ID_Izvodjenje = ii.ID_Izvodjenje " +
                 "JOIN Istrazivac i ON ii.ID_Istrazivac = i.ID_Istrazivac";
 
-        try (Connection conn = Config.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try {
+            Connection conn = Config.getConnection();
 
-            while (rs.next()) {
-                String lab = rs.getString("lab_name");
-                String researcher = rs.getString("researcher_name");
+            try (PreparedStatement pstmt = conn.prepareStatement(sql);
+                 ResultSet rs = pstmt.executeQuery()) {
 
-                dataList.add(new LabResearcher(lab, researcher));
+                while (rs.next()) {
+                    String lab = rs.getString("lab_name");
+                    String researcher = rs.getString("researcher_name");
+
+                    dataList.add(new LabResearcher(lab, researcher));
+                }
+
+                overviewTable.setItems(dataList);
             }
-
-            overviewTable.setItems(dataList);
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Greška u bazi pri učitavanju laboratorija i istraživača!");
+            System.out.println("Database error while loading dashboard statistics!");
+        }
+    }
+
+    @FXML
+    protected void handleAccountSettings(javafx.event.ActionEvent event) {
+        try {
+            javafx.scene.Parent settingsRoot = javafx.fxml.FXMLLoader.load(getClass().getResource("/com/economylab/view/account-settings-view.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(settingsRoot);
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            System.out.println("Error: Cannot load account-settings-view.fxml");
         }
     }
 }

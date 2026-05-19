@@ -5,6 +5,7 @@ import java.io.*;
 public class Authentication {
 
     private static final String USERS_FILE = "users.txt";
+    public static String loggedInUsername = null;
 
     public static boolean registerUser(String username, String password) {
         if (userExists(username)) {
@@ -44,6 +45,7 @@ public class Authentication {
                     String storedPassword = credentials[1];
 
                     if (storedUsername.equals(username) && storedPassword.equals(password)) {
+                        loggedInUsername = username;
                         return true;
                     }
                 }

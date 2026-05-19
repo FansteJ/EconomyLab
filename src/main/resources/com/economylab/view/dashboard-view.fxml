@@ -28,7 +28,7 @@
     </TableView>
 
     <HBox alignment="CENTER" spacing="20.0">
-        <Button mnemonicParsing="false" text="Podešavanja naloga (Ažuriraj/Obriši)" />
+        <Button onAction="#handleAccountSettings" mnemonicParsing="false" text="Podešavanja naloga (Ažuriraj/Obriši)" />
         <Button mnemonicParsing="false" text="Odjavi se" />
     </HBox>
 </VBox>
