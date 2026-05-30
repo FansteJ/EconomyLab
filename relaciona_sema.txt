@@ -1,0 +1,119 @@
+==================================================================
+RELACIONA SEMA BAZA PODATAKA: EconomyLab
+==================================================================
+
+Legenda oznaka:
+- PK: Primarni kljuc (Primary Key)
+- FK: Strani kljuc (Foreign Key) -> upucuje na roditeljsku tabelu
+
+------------------------------------------------------------------
+
+1. Tip_Eksperiment (
+    ID_Tip [PK], 
+    Naziv, 
+    Opis
+)
+
+2. Eksperiment (
+    ID_Eksperiment [PK], 
+    Naziv, 
+    ID_Tip [FK -> Tip_Eksperiment]
+)
+
+3. Laboratorija (
+    ID_Laboratorija [PK], 
+    Naziv, 
+    Opis
+)
+
+4. Resurs (
+    ID_Resurs [PK], 
+    Naziv, 
+    Cena
+)
+
+5. Laboratorija_Resurs (
+    ID_Laboratorija [PK, FK -> Laboratorija], 
+    ID_Resurs [PK, FK -> Resurs], 
+    Kolicina, 
+    Status
+)
+
+6. Tip_Alat (
+    ID_Tip [PK], 
+    Naziv, 
+    Opis
+)
+
+7. Alat (
+    ID_Alat [PK], 
+    Datum_Nabavke, 
+    Datum_Proizvodnje, 
+    ID_Tip [FK -> Tip_Alat], 
+    ID_Laboratorija [FK -> Laboratorija]
+)
+
+8. Istrazivac (
+    ID_Istrazivac [PK], 
+    Ime, 
+    Prezime, 
+    Kvalifikacije
+)
+
+9. Teorija (
+    ID_Teorija [PK], 
+    Naziv, 
+    Opis
+)
+
+10. Eksperiment_Dizajner (
+    ID_Istrazivac [PK, FK -> Istrazivac], 
+    ID_Eksperiment [PK, FK -> Eksperiment], 
+    ID_Teorija [FK -> Teorija]
+)
+
+11. Izvodjenje (
+    ID_Izvodjenje [PK], 
+    Datum, 
+    Status, 
+    Cena, 
+    Kolicina, 
+    ID_Eksperiment [FK -> Eksperiment], 
+    ID_Laboratorija [FK -> Laboratorija]
+)
+
+12. Izvodjenje_Izvodjac (
+    ID_Istrazivac [PK, FK -> Istrazivac], 
+    ID_Izvodjenje [PK, FK -> Izvodjenje]
+)
+
+13. Sesija (
+    ID_Sesija [PK], 
+    Datum, 
+    Vreme_Pocetka, 
+    Vreme_Zavrsetka, 
+    Model_Simulacije, 
+    ID_Izvodjenje [FK -> Izvodjenje]
+)
+
+14. Sesija_Alat (
+    Sesija_ID_Sesija [PK, FK -> Sesija], 
+    Alat_ID_Alat [PK, FK -> Alat]
+)
+
+15. Sesija_Resurs (
+    ID_Sesija [PK, FK -> Sesija], 
+    ID_Resurs [PK, FK -> Resurs], 
+    Iskoriscena_Kolicina
+)
+
+16. Eksperiment_zahteva_Resurs (
+    ID_Eksperiment [PK, FK -> Eksperiment], 
+    ID_Resurs [PK, FK -> Resurs], 
+    Kolicina
+)
+
+17. Eksperiment_has_Tip_Alat (
+    ID_Eksperiment [PK, FK -> Eksperiment], 
+    ID_Tip_Alat [PK, FK -> Tip_Alat]
+)
